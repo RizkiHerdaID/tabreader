@@ -26,21 +26,23 @@ func New(parts ...int) *Scanner {
 	return &Scanner{len, parts}
 }
 
-// Scan parses a line according to the provided Scanner specification. Arguments types are discovered using reflect. Valid types are: int, int32, int64, float32, float64. If a field is empty (all blanks), the zero-value for its type is used. line length must be at least the sum of all field lengths. Number of arguents should also match the number of fields used when creating the Scanner.
+// Scan parses a line according to the provided Scanner specification. Arguments types are discovered using reflect. Valid types are: int, int32, int64, float32, float64.
+// If a field is empty (all blanks), the zero-value for its type is used. line length must be at least the sum of all field lengths.
+// Number of arguments must match the number of fields used when creating the Scanner.
 //
 // Scan returns the number of items read. If lower than the number of fields, an error is also returned.
-func (ss *Scanner) Scan(line string, args ...interface{}) (n int, err error) {
-	if i := len(line); i < ss.len {
-		return 0, fmt.Errorf("exepected string of size at least %d, actual %d", ss.len, i)
+func (s *Scanner) Scan(line string, args ...interface{}) (n int, err error) {
+	if i := len(line); i < s.len {
+		return 0, fmt.Errorf("exepected string of size at least %d, actual %d", s.len, i)
 	}
-	if len(args) != len(ss.parts) {
-		return 0, fmt.Errorf("expected %d args, actual %d", len(ss.parts), len(args))
+	if len(args) != len(s.parts) {
+		return 0, fmt.Errorf("expected %d args, actual %d", len(s.parts), len(args))
 	}
 	n = 0
 	start := 0
 	for ; n < len(args); n++ {
 		a := args[n]
-		l := ss.parts[n]
+		l := s.parts[n]
 		if err = scanOne(line[start:start+l], a); err != nil {
 			return
 		}
