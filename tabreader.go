@@ -12,26 +12,26 @@ import (
 	"strings"
 )
 
-type Scanner struct {
+type scanner struct {
 	len   int
 	parts []int
 }
 
-// New returns a new Scanner that can be used to scan lines. parts is a variadic with the sequential lengths of each field you want to scan.
-func New(parts ...int) *Scanner {
+// New returns a new scanner that can be used to scan lines. parts is a variadic with the sequential lengths of each field you want to scan.
+func New(parts ...int) *scanner {
 	len := 0
 	for _, v := range parts {
 		len += v
 	}
-	return &Scanner{len, parts}
+	return &scanner{len, parts}
 }
 
-// Scan parses a line according to the provided Scanner specification. Arguments types are discovered using reflect. Valid types are: int, int32, int64, float32, float64.
+// Scan parses a line according to the provided scanner specification. Arguments types are discovered using reflect. Valid types are: int, int32, int64, float32, float64.
 // If a field is empty (all blanks), the zero-value for its type is used. line length must be at least the sum of all field lengths.
-// Number of arguments must match the number of fields used when creating the Scanner.
+// Number of arguments must match the number of fields used when creating the scanner.
 //
 // Scan returns the number of items read. If lower than the number of fields, an error is also returned.
-func (s *Scanner) Scan(line string, args ...interface{}) (n int, err error) {
+func (s *scanner) Scan(line string, args ...interface{}) (n int, err error) {
 	if i := len(line); i < s.len {
 		return 0, fmt.Errorf("exepected string of size at least %d, actual %d", s.len, i)
 	}
